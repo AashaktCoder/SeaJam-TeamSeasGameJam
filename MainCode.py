@@ -1,12 +1,19 @@
 import pygame
 import time
 from random import randint
+from MainMenu import Menu
 
 pygame.init()
 
 HEIGHT, WIDTH = 500, 500
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Dodge The Trash")
+
+
+def Text(msg, x, y, color, fontsize):
+    font = pygame.font.Font("BoyzRGrossNF.ttf", fontsize)
+    text = font.render(msg, True, color)
+    WIN.blit(text, (x, y))
 
 
 def Main():
@@ -36,11 +43,6 @@ def Main():
         Trash = [TrashX, TrashY, 50, 50]
         return Trash
 
-    def Text(msg, x, y, color, fontsize):
-        font = pygame.font.Font("BoyzRGrossNF.ttf", fontsize)
-        text = font.render(msg, True, color)
-        WIN.blit(text, (x, y))
-
     # Loading the Images
     FishImage = pygame.image.load("Images\\Fish.png").convert_alpha()
     FishImage = pygame.transform.scale(FishImage, (60, 60))
@@ -55,7 +57,7 @@ def Main():
         last_time = time.time()
 
         # Drawing Everything
-        WIN.fill((255, 255, 255))
+        WIN.fill((114, 184, 247))
         Player = WIN.blit(FishImage, (PlayerX, PlayerY))
         Text(f"Health: {Health}", 0, 0, (0, 0, 0), 30)
         for TrashPosition in TrashList:
@@ -99,4 +101,5 @@ def Main():
         clock.tick(FPS)
 
 
-Main()
+# Running the Functions
+Menu(WIN, Text)
