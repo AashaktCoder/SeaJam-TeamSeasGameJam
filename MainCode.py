@@ -94,12 +94,10 @@ def Main():
             TrashPos = SpawnTrash()
             TrashList.append(TrashPos)
         if Health <= 0:
-            run = False
-            pygame.quit()
-            quit()
+            Menu(WIN, Text, Main)
         pygame.display.update()
         clock.tick(FPS)
 
 
 # Running the Functions
-Menu(WIN, Text)
+Menu(WIN, Text, Main)
