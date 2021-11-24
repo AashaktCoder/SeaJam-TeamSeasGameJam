@@ -40,6 +40,12 @@ def Main():
         text = font.render(msg, True, color)
         WIN.blit(text, (x, y))
 
+    # Loading the Images
+    FishImage = pygame.image.load("Fish.png").convert_alpha()
+    FishImage = pygame.transform.scale(FishImage, (60, 60))
+    TrashImages = [pygame.image.load("Bottle.png").convert_alpha()]
+    Background = pygame.image.load("Background.png").convert_alpha()
+
     while run:
         dt = time.time() - last_time
         dt *= 60
@@ -47,16 +53,18 @@ def Main():
 
         # Drawing Everything
         WIN.fill((255, 255, 255))
-        Player = pygame.draw.rect(WIN, (0, 0, 0), [PlayerX, PlayerY, 50, 50])
+        Player = WIN.blit(FishImage, (PlayerX, PlayerY))
         Text(f"Health: {Health}", 0, 0, (0, 0, 0), 30)
         for TrashPosition in TrashList:
-            Trash = pygame.draw.rect(WIN, (0, 0, 255), TrashPosition)
+            Trash = WIN.blit(
+                TrashImages[0], (TrashPosition[0], TrashPosition[1]))
             TrashPosition[1] += VelY * dt
             if Player.colliderect(TrashPosition):
                 TrashList.clear()
                 Health -= 1
             if TrashPosition[1] >= 500:
                 TrashList.clear()
+        WIN.blit(Background, (0, 0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -66,9 +74,13 @@ def Main():
         if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and PlayerX <= HEIGHT-50:
             Direction = 1
             PlayerX += VelX * Direction * dt
+            FishImage = pygame.image.load("Fish2.png").convert_alpha()
+            FishImage = pygame.transform.scale(FishImage, (60, 60))
         if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and PlayerX >= 0:
             Direction = -1
             PlayerX += VelX * Direction * dt
+            FishImage = pygame.image.load("Fish.png").convert_alpha()
+            FishImage = pygame.transform.scale(FishImage, (60, 60))
         RandomTrash = randint(0, 10)
         if (RandomTrash > 5 and len(TrashList) <= 5):
             TrashPos = SpawnTrash()
