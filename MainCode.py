@@ -6,6 +6,7 @@ pygame.init()
 
 HEIGHT, WIDTH = 500, 500
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Dodge The Trash")
 
 
 def Main():
@@ -45,6 +46,8 @@ def Main():
     FishImage = pygame.transform.scale(FishImage, (60, 60))
     TrashImages = [pygame.image.load("Bottle.png").convert_alpha()]
     Background = pygame.image.load("Background.png").convert_alpha()
+    PlayerMask = pygame.mask.from_surface(FishImage)
+    TrashMask = pygame.mask.from_surface(TrashImages[0])
 
     while run:
         dt = time.time() - last_time
@@ -59,7 +62,10 @@ def Main():
             Trash = WIN.blit(
                 TrashImages[0], (TrashPosition[0], TrashPosition[1]))
             TrashPosition[1] += VelY * dt
-            if Player.colliderect(TrashPosition):
+            offset = (
+                int(PlayerX-TrashPosition[0]), int(PlayerY-TrashPosition[1]))
+            collision = PlayerMask.overlap(TrashMask, offset)
+            if collision:
                 TrashList.clear()
                 Health -= 1
             if TrashPosition[1] >= 500:
