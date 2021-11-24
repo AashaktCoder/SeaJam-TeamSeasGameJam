@@ -42,10 +42,10 @@ def Main():
         WIN.blit(text, (x, y))
 
     # Loading the Images
-    FishImage = pygame.image.load("Fish.png").convert_alpha()
+    FishImage = pygame.image.load("Images\\Fish.png").convert_alpha()
     FishImage = pygame.transform.scale(FishImage, (60, 60))
-    TrashImages = [pygame.image.load("Bottle.png").convert_alpha()]
-    Background = pygame.image.load("Background.png").convert_alpha()
+    TrashImages = [pygame.image.load("Images\\Bottle.png").convert_alpha()]
+    Background = pygame.image.load("Images\\Background.png").convert_alpha()
     PlayerMask = pygame.mask.from_surface(FishImage)
     TrashMask = pygame.mask.from_surface(TrashImages[0])
 
@@ -80,12 +80,12 @@ def Main():
         if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and PlayerX <= HEIGHT-50:
             Direction = 1
             PlayerX += VelX * Direction * dt
-            FishImage = pygame.image.load("Fish2.png").convert_alpha()
+            FishImage = pygame.image.load("Images\\Fish2.png").convert_alpha()
             FishImage = pygame.transform.scale(FishImage, (60, 60))
         if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and PlayerX >= 0:
             Direction = -1
             PlayerX += VelX * Direction * dt
-            FishImage = pygame.image.load("Fish.png").convert_alpha()
+            FishImage = pygame.image.load("Images\\Fish.png").convert_alpha()
             FishImage = pygame.transform.scale(FishImage, (60, 60))
         RandomTrash = randint(0, 10)
         if (RandomTrash > 5 and len(TrashList) <= 5):
