@@ -24,6 +24,7 @@ def Main():
     VelY = 4
 
     TrashList = []
+    Health = 2
 
     # Functions
     def SpawnTrash():
@@ -34,6 +35,11 @@ def Main():
         Trash = [TrashX, TrashY, 50, 50]
         return Trash
 
+    def Text(msg, x, y, color, fontsize):
+        font = pygame.font.Font("BoyzRGrossNF.ttf", fontsize)
+        text = font.render(msg, True, color)
+        WIN.blit(text, (x, y))
+
     while run:
         dt = time.time() - last_time
         dt *= 60
@@ -42,13 +48,13 @@ def Main():
         # Drawing Everything
         WIN.fill((255, 255, 255))
         Player = pygame.draw.rect(WIN, (0, 0, 0), [PlayerX, PlayerY, 50, 50])
+        Text(f"Health: {Health}", 0, 0, (0, 0, 0), 30)
         for TrashPosition in TrashList:
             Trash = pygame.draw.rect(WIN, (0, 0, 255), TrashPosition)
             TrashPosition[1] += VelY * dt
             if Player.colliderect(TrashPosition):
-                run = False
-                pygame.quit()
-                quit()
+                TrashList.clear()
+                Health -= 1
             if TrashPosition[1] >= 500:
                 TrashList.clear()
         for event in pygame.event.get():
@@ -67,6 +73,10 @@ def Main():
         if (RandomTrash > 5 and len(TrashList) <= 5):
             TrashPos = SpawnTrash()
             TrashList.append(TrashPos)
+        if Health <= 0:
+            run = False
+            pygame.quit()
+            quit()
         pygame.display.update()
         clock.tick(FPS)
 
