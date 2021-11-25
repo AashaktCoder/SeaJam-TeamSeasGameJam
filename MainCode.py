@@ -33,6 +33,7 @@ def Main():
 
     TrashList = []
     CoinList = []
+    CoinCollect = 0
     Health = 2
 
     # Functions
@@ -51,7 +52,9 @@ def Main():
     CoinImage = pygame.image.load("Images\\Coin.png").convert_alpha()
     PlayerMask = pygame.mask.from_surface(FishImage)
     TrashMask = pygame.mask.from_surface(TrashImages[0])
-
+    CoinFile = open("Coins.txt", 'r')
+    CoinNumber = int(CoinFile.read())
+    CoinFile.close()
     while run:
         dt = time.time() - last_time
         dt *= 60
@@ -61,6 +64,7 @@ def Main():
         WIN.fill((39, 141, 232))
         Player = WIN.blit(FishImage, (PlayerX, PlayerY))
         Text(f"Health: {Health}", 0, 0, (0, 0, 0), 30)
+        Text(f"Coins: {CoinNumber+CoinCollect}", 100, 0, (0, 0, 0), 30)
         for TrashPosition in TrashList:
             Trash = WIN.blit(
                 TrashImages[0], (TrashPosition[0], TrashPosition[1]))
@@ -77,8 +81,11 @@ def Main():
             Coin = WIN.blit(CoinImage, (CoinPosition[0], CoinPosition[1]))
             CoinPosition[1] += VelY * dt
             if Player.colliderect(Coin):
+                CoinCollect += 1
+                CoinFile = open("Coins.txt", 'w')
+                CoinFile.write(str(CoinNumber+CoinCollect))
+                CoinFile.close()
                 CoinList.pop(len(CoinList) - 1)
-                print("Coin Collected")
             if CoinPosition[1] >= 500:
                 CoinList.pop(len(CoinList) - 1)
         for event in pygame.event.get():
@@ -106,6 +113,9 @@ def Main():
             CoinList.insert(0, CoinPos)
         if Health <= 0:
             Menu(WIN, Text, Main)
+            CoinFile.write(str(CoinNumber))
+            CoinFile.truncate()
+            CoinFile.close()
         pygame.display.update()
         clock.tick(FPS)
 
