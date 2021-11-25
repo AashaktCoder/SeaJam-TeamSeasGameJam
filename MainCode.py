@@ -8,6 +8,9 @@ pygame.init()
 HEIGHT, WIDTH = 500, 500
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Dodge The Trash")
+Icon = pygame.image.load("Images\\Logo.png")
+Icon = pygame.transform.scale(Icon, (32, 32))
+pygame.display.set_icon(Icon)
 
 
 def Text(msg, x, y, color, fontsize):
@@ -33,6 +36,7 @@ def Main():
 
     TrashList = []
     CoinList = []
+    FoodList = []
     CoinCollect = 0
     Health = 2
 
@@ -50,11 +54,18 @@ def Main():
     FishImage = pygame.transform.scale(FishImage, (60, 60))
     TrashImages = [pygame.image.load("Images\\Bottle.png").convert_alpha()]
     CoinImage = pygame.image.load("Images\\Coin.png").convert_alpha()
+    FoodImage = pygame.image.load("Images\\Food.png").convert_alpha()
     PlayerMask = pygame.mask.from_surface(FishImage)
     TrashMask = pygame.mask.from_surface(TrashImages[0])
+
+    # Reading from files
     CoinFile = open("Coins.txt", 'r')
     CoinNumber = int(CoinFile.read())
     CoinFile.close()
+    HighScoreFile = open("HighScore.txt", 'r')
+    HighScore = HighScoreFile.read()
+    HighScoreFile.close()
+
     while run:
         dt = time.time() - last_time
         dt *= 60
@@ -65,6 +76,7 @@ def Main():
         Player = WIN.blit(FishImage, (PlayerX, PlayerY))
         Text(f"Health: {Health}", 0, 0, (0, 0, 0), 30)
         Text(f"Coins: {CoinNumber+CoinCollect}", 100, 0, (0, 0, 0), 30)
+        Text(f"HighScore: {HighScore}", 0, 30, (0, 0, 0), 30)
         for TrashPosition in TrashList:
             Trash = WIN.blit(
                 TrashImages[0], (TrashPosition[0], TrashPosition[1]))
@@ -88,6 +100,14 @@ def Main():
                 CoinList.pop(len(CoinList) - 1)
             if CoinPosition[1] >= 500:
                 CoinList.pop(len(CoinList) - 1)
+        for FoodPosition in FoodList:
+            Food = WIN.blit(FoodImage, (FoodPosition[0], FoodPosition[1]))
+            FoodPosition[1] += VelY * dt
+            if Player.colliderect(Food):
+                FoodList.clear()
+                Health += 1
+            if FoodPosition[1] >= 500:
+                FoodList.clear()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -111,6 +131,9 @@ def Main():
         if (RandomTrash > 995 and len(CoinList) < 2):
             CoinPos = SpawnObjects()
             CoinList.insert(0, CoinPos)
+        if (RandomTrash > 997 and len(FoodList) < 1):
+            FoodPos = SpawnObjects()
+            FoodList.insert(0, FoodPos)
         if Health <= 0:
             Menu(WIN, Text, Main)
             CoinFile.write(str(CoinNumber))
