@@ -65,6 +65,7 @@ def Main():
     HighScoreFile = open("HighScore.txt", 'r')
     HighScore = HighScoreFile.read()
     HighScoreFile.close()
+    Score = 0
 
     while run:
         dt = time.time() - last_time
@@ -77,6 +78,7 @@ def Main():
         Text(f"Health: {Health}", 0, 0, (0, 0, 0), 30)
         Text(f"Coins: {CoinNumber+CoinCollect}", 100, 0, (0, 0, 0), 30)
         Text(f"HighScore: {HighScore}", 0, 30, (0, 0, 0), 30)
+        Text(f"Score: {Score}", 0, 60, (0, 0, 0), 30)
         for TrashPosition in TrashList:
             Trash = WIN.blit(
                 TrashImages[0], (TrashPosition[0], TrashPosition[1]))
@@ -89,6 +91,7 @@ def Main():
                 Health -= 1
             if TrashPosition[1] >= 500:
                 TrashList.pop(len(TrashList)-1)
+                Score += 1
         for CoinPosition in CoinList:
             Coin = WIN.blit(CoinImage, (CoinPosition[0], CoinPosition[1]))
             CoinPosition[1] += VelY * dt
@@ -139,6 +142,11 @@ def Main():
             CoinFile.write(str(CoinNumber))
             CoinFile.truncate()
             CoinFile.close()
+        if Score > int(HighScore):
+            HighScore = Score
+            f = open("HighScore.txt", 'w')
+            f.write(str(HighScore))
+            f.close()
         pygame.display.update()
         clock.tick(FPS)
 
