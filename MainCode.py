@@ -32,22 +32,23 @@ def Main():
     VelY = 4
 
     TrashList = []
+    CoinList = []
     Health = 2
 
     # Functions
-    def SpawnTrash():
-        global TrashX
-        global TrashY
-        TrashX = randint(0, 450)
-        TrashY = 50
-        Trash = [TrashX, TrashY, 50, 50]
-        return Trash
+    def SpawnObjects():
+        global ObjectX
+        global ObjectY
+        ObjectX = randint(0, 450)
+        ObjectY = randint(-100, 0)
+        Object = [ObjectX, ObjectY, 50, 50]
+        return Object
 
     # Loading the Images
     FishImage = pygame.image.load("Images\\Fish.png").convert_alpha()
     FishImage = pygame.transform.scale(FishImage, (60, 60))
     TrashImages = [pygame.image.load("Images\\Bottle.png").convert_alpha()]
-    Background = pygame.image.load("Images\\Background.png").convert_alpha()
+    CoinImage = pygame.image.load("Images\\Coin.png").convert_alpha()
     PlayerMask = pygame.mask.from_surface(FishImage)
     TrashMask = pygame.mask.from_surface(TrashImages[0])
 
@@ -57,7 +58,7 @@ def Main():
         last_time = time.time()
 
         # Drawing Everything
-        WIN.fill((114, 184, 247))
+        WIN.fill((39, 141, 232))
         Player = WIN.blit(FishImage, (PlayerX, PlayerY))
         Text(f"Health: {Health}", 0, 0, (0, 0, 0), 30)
         for TrashPosition in TrashList:
@@ -71,8 +72,15 @@ def Main():
                 TrashList.clear()
                 Health -= 1
             if TrashPosition[1] >= 500:
-                TrashList.clear()
-        WIN.blit(Background, (0, 0))
+                TrashList.pop(len(TrashList)-1)
+        for CoinPosition in CoinList:
+            Coin = WIN.blit(CoinImage, (CoinPosition[0], CoinPosition[1]))
+            CoinPosition[1] += VelY * dt
+            if Player.colliderect(Coin):
+                CoinList.pop(len(CoinList) - 1)
+                print("Coin Collected")
+            if CoinPosition[1] >= 500:
+                CoinList.pop(len(CoinList) - 1)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -89,10 +97,13 @@ def Main():
             PlayerX += VelX * Direction * dt
             FishImage = pygame.image.load("Images\\Fish.png").convert_alpha()
             FishImage = pygame.transform.scale(FishImage, (60, 60))
-        RandomTrash = randint(0, 10)
-        if (RandomTrash > 5 and len(TrashList) <= 5):
-            TrashPos = SpawnTrash()
-            TrashList.append(TrashPos)
+        RandomTrash = randint(0, 1000)
+        if (RandomTrash > 900 and len(TrashList) <= 10):
+            TrashPos = SpawnObjects()
+            TrashList.insert(0, TrashPos)
+        if (RandomTrash > 995 and len(CoinList) < 2):
+            CoinPos = SpawnObjects()
+            CoinList.insert(0, CoinPos)
         if Health <= 0:
             Menu(WIN, Text, Main)
         pygame.display.update()

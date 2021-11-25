@@ -15,11 +15,17 @@ def Menu(WIN, Text, Main):
             pygame.mouse.set_cursor(
                 *pygame.cursors.Cursor(pygame.SYSTEM_CURSOR_HAND))
             if pygame.mouse.get_pressed()[0]:
+                pygame.mouse.set_cursor(
+                    *pygame.cursors.Cursor(pygame.SYSTEM_CURSOR_ARROW))
                 Main()
+        else:
+            pygame.mouse.set_cursor(
+                *pygame.cursors.Cursor(pygame.SYSTEM_CURSOR_ARROW)) 
+                
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run1 = False
                 pygame.quit()
-                quit()
+                quit()       
         pygame.display.update()
         clock.tick(FPS)
