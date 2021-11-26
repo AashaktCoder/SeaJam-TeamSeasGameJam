@@ -66,8 +66,12 @@ def Main():
     HighScore = HighScoreFile.read()
     HighScoreFile.close()
     Score = 0
+    DifficultyFile = open("Difficulty.txt", 'r')
+    DifficultyLevel = int(DifficultyFile.read())
+    DifficultyFile.close()
 
     while run:
+        mouse = pygame.mouse.get_pos()
         dt = time.time() - last_time
         dt *= 60
         last_time = time.time()
@@ -79,6 +83,8 @@ def Main():
         Text(f"Coins: {CoinNumber+CoinCollect}", 100, 0, (0, 0, 0), 30)
         Text(f"HighScore: {HighScore}", 0, 30, (0, 0, 0), 30)
         Text(f"Score: {Score}", 0, 60, (0, 0, 0), 30)
+        pygame.draw.rect(WIN, (0, 0, 0), [400, 0, 100, 50], 5, 10)
+        Text("Menu", 418, 8, (0, 0, 0), 30)
         for TrashPosition in TrashList:
             Trash = WIN.blit(
                 TrashImages[0], (TrashPosition[0], TrashPosition[1]))
@@ -128,7 +134,7 @@ def Main():
             FishImage = pygame.image.load("Images\\Fish.png").convert_alpha()
             FishImage = pygame.transform.scale(FishImage, (60, 60))
         RandomTrash = randint(0, 1000)
-        if (RandomTrash > 900 and len(TrashList) <= 10):
+        if (RandomTrash > DifficultyLevel and len(TrashList) <= 10):
             TrashPos = SpawnObjects()
             TrashList.insert(0, TrashPos)
         if (RandomTrash > 995 and len(CoinList) < 2):
@@ -147,6 +153,9 @@ def Main():
             f = open("HighScore.txt", 'w')
             f.write(str(HighScore))
             f.close()
+        if 500 > mouse[0] > 400 and 50 > mouse[1] > 0:
+            if pygame.mouse.get_pressed()[0]:
+                Menu(WIN, Text, Main)
         pygame.display.update()
         clock.tick(FPS)
 
